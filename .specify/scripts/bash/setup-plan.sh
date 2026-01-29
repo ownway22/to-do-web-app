@@ -2,7 +2,7 @@
 
 set -e
 
-# Parse command line arguments
+# 解析命令列參數
 JSON_MODE=false
 ARGS=()
 
@@ -12,9 +12,9 @@ for arg in "$@"; do
             JSON_MODE=true 
             ;;
         --help|-h) 
-            echo "Usage: $0 [--json]"
-            echo "  --json    Output results in JSON format"
-            echo "  --help    Show this help message"
+            echo "用法：$0 [--json]"
+            echo "  --json    以 JSON 格式輸出結果"
+            echo "  --help    顯示此說明訊息"
             exit 0 
             ;;
         *) 
@@ -23,31 +23,31 @@ for arg in "$@"; do
     esac
 done
 
-# Get script directory and load common functions
+# 取得腳本目錄並載入共用函式
 SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
-# Get all paths and variables from common functions
+# 從共用函式取得所有路徑和變數
 eval $(get_feature_paths)
 
-# Check if we're on a proper feature branch (only for git repos)
+# 檢查是否在正確的功能分支上（僅適用於 Git 儲存庫）
 check_feature_branch "$CURRENT_BRANCH" "$HAS_GIT" || exit 1
 
-# Ensure the feature directory exists
+# 確保功能目錄存在
 mkdir -p "$FEATURE_DIR"
 
-# Copy plan template if it exists
+# 如果存在，複製計畫範本
 TEMPLATE="$REPO_ROOT/.specify/templates/plan-template.md"
 if [[ -f "$TEMPLATE" ]]; then
     cp "$TEMPLATE" "$IMPL_PLAN"
-    echo "Copied plan template to $IMPL_PLAN"
+    echo "已將計畫範本複製到 $IMPL_PLAN"
 else
-    echo "Warning: Plan template not found at $TEMPLATE"
-    # Create a basic plan file if template doesn't exist
+    echo "警告：找不到計畫範本於 $TEMPLATE"
+    # 如果範本不存在，建立基本計畫檔案
     touch "$IMPL_PLAN"
 fi
 
-# Output results
+# 輸出結果
 if $JSON_MODE; then
     printf '{"FEATURE_SPEC":"%s","IMPL_PLAN":"%s","SPECS_DIR":"%s","BRANCH":"%s","HAS_GIT":"%s"}\n' \
         "$FEATURE_SPEC" "$IMPL_PLAN" "$FEATURE_DIR" "$CURRENT_BRANCH" "$HAS_GIT"

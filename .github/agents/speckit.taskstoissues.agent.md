@@ -1,30 +1,30 @@
 ---
-description: Convert existing tasks into actionable, dependency-ordered GitHub issues for the feature based on available design artifacts.
+description: 根據可用的設計產出文件，將現有任務轉換為可執行、相依性排序的 GitHub issues。
 tools: ['github/github-mcp-server/issue_write']
 ---
 
-## User Input
+## 使用者輸入
 
 ```text
 $ARGUMENTS
 ```
 
-You **MUST** consider the user input before proceeding (if not empty).
+您**必須**在繼續之前考慮使用者輸入（如果非空）。
 
-## Outline
+## 大綱
 
-1. Run `.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
-1. From the executed script, extract the path to **tasks**.
-1. Get the Git remote by running:
+1. 從儲存庫根目錄執行 `.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks`，並解析 FEATURE_DIR 和 AVAILABLE_DOCS 清單。所有路徑必須是絕對路徑。對於參數中的單引號如 "I'm Groot"，使用跳脫語法：例如 'I'\''m Groot'（或盡可能使用雙引號："I'm Groot"）。
+1. 從執行的腳本中，提取 **tasks** 的路徑。
+1. 執行以下命令取得 Git 遠端：
 
 ```bash
 git config --get remote.origin.url
 ```
 
 > [!CAUTION]
-> ONLY PROCEED TO NEXT STEPS IF THE REMOTE IS A GITHUB URL
+> 僅當遠端是 GITHUB URL 時才繼續執行下一步驟
 
-1. For each task in the list, use the GitHub MCP server to create a new issue in the repository that is representative of the Git remote.
+1. 對於清單中的每個任務，使用 GitHub MCP 伺服器在代表 Git 遠端的儲存庫中建立新的 issue。
 
 > [!CAUTION]
-> UNDER NO CIRCUMSTANCES EVER CREATE ISSUES IN REPOSITORIES THAT DO NOT MATCH THE REMOTE URL
+> 在任何情況下都絕對不要在與遠端 URL 不符的儲存庫中建立 issues

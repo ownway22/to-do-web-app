@@ -15,41 +15,41 @@ while [ $i -le $# ]; do
             ;;
         --short-name)
             if [ $((i + 1)) -gt $# ]; then
-                echo 'Error: --short-name requires a value' >&2
+                echo '錯誤：--short-name 需要一個值' >&2
                 exit 1
             fi
             i=$((i + 1))
             next_arg="${!i}"
-            # Check if the next argument is another option (starts with --)
+            # 檢查下一個參數是否為另一個選項（以 -- 開頭）
             if [[ "$next_arg" == --* ]]; then
-                echo 'Error: --short-name requires a value' >&2
+                echo '錯誤：--short-name 需要一個值' >&2
                 exit 1
             fi
             SHORT_NAME="$next_arg"
             ;;
         --number)
             if [ $((i + 1)) -gt $# ]; then
-                echo 'Error: --number requires a value' >&2
+                echo '錯誤：--number 需要一個值' >&2
                 exit 1
             fi
             i=$((i + 1))
             next_arg="${!i}"
             if [[ "$next_arg" == --* ]]; then
-                echo 'Error: --number requires a value' >&2
+                echo '錯誤：--number 需要一個值' >&2
                 exit 1
             fi
             BRANCH_NUMBER="$next_arg"
             ;;
         --help|-h) 
-            echo "Usage: $0 [--json] [--short-name <name>] [--number N] <feature_description>"
+            echo "用法：$0 [--json] [--short-name <名稱>] [--number N] <功能描述>"
             echo ""
-            echo "Options:"
-            echo "  --json              Output in JSON format"
-            echo "  --short-name <name> Provide a custom short name (2-4 words) for the branch"
-            echo "  --number N          Specify branch number manually (overrides auto-detection)"
-            echo "  --help, -h          Show this help message"
+            echo "選項："
+            echo "  --json              以 JSON 格式輸出"
+            echo "  --short-name <名稱> 提供自訂短名稱（2-4 個單詞）用於分支"
+            echo "  --number N          手動指定分支編號（覆蓋自動偵測）"
+            echo "  --help, -h          顯示此說明訊息"
             echo ""
-            echo "Examples:"
+            echo "範例："
             echo "  $0 'Add user authentication system' --short-name 'user-auth'"
             echo "  $0 'Implement OAuth2 integration for API' --number 5"
             exit 0
@@ -63,11 +63,11 @@ done
 
 FEATURE_DESCRIPTION="${ARGS[*]}"
 if [ -z "$FEATURE_DESCRIPTION" ]; then
-    echo "Usage: $0 [--json] [--short-name <name>] [--number N] <feature_description>" >&2
+    echo "用法：$0 [--json] [--short-name <名稱>] [--number N] <功能描述>" >&2
     exit 1
 fi
 
-# Function to find the repository root by searching for existing project markers
+# 透過搜尋現有專案標記來尋找儲存庫根目錄的函式
 find_repo_root() {
     local dir="$1"
     while [ "$dir" != "/" ]; do
@@ -80,7 +80,7 @@ find_repo_root() {
     return 1
 }
 
-# Function to get highest number from specs directory
+# 從 specs 目錄取得最高編號的函式
 get_highest_from_specs() {
     local specs_dir="$1"
     local highest=0
@@ -100,19 +100,19 @@ get_highest_from_specs() {
     echo "$highest"
 }
 
-# Function to get highest number from git branches
+# 從 Git 分支取得最高編號的函式
 get_highest_from_branches() {
     local highest=0
     
-    # Get all branches (local and remote)
+    # 取得所有分支（本地和遠端）
     branches=$(git branch -a 2>/dev/null || echo "")
     
     if [ -n "$branches" ]; then
         while IFS= read -r branch; do
-            # Clean branch name: remove leading markers and remote prefixes
+            # 清理分支名稱：移除前導標記和遠端前綴
             clean_branch=$(echo "$branch" | sed 's/^[* ]*//; s|^remotes/[^/]*/||')
             
-            # Extract feature number if branch matches pattern ###-*
+            # 如果分支符合 ###-* 模式，擷取功能編號
             if echo "$clean_branch" | grep -q '^[0-9]\{3\}-'; then
                 number=$(echo "$clean_branch" | grep -o '^[0-9]\{3\}' || echo "0")
                 number=$((10#$number))
@@ -126,38 +126,37 @@ get_highest_from_branches() {
     echo "$highest"
 }
 
-# Function to check existing branches (local and remote) and return next available number
+# 檢查現有分支（本地和遠端）並回傳下一個可用編號的函式
 check_existing_branches() {
     local specs_dir="$1"
 
-    # Fetch all remotes to get latest branch info (suppress errors if no remotes)
+    # 擷取所有遠端以取得最新分支資訊（如果沒有遠端則抑制錯誤）
     git fetch --all --prune 2>/dev/null || true
 
-    # Get highest number from ALL branches (not just matching short name)
+    # 從所有分支（不僅是匹配短名稱的分支）取得最高編號
     local highest_branch=$(get_highest_from_branches)
 
-    # Get highest number from ALL specs (not just matching short name)
+    # 從所有規格（不僅是匹配短名稱的規格）取得最高編號
     local highest_spec=$(get_highest_from_specs "$specs_dir")
 
-    # Take the maximum of both
+    # 取兩者的最大值
     local max_num=$highest_branch
     if [ "$highest_spec" -gt "$max_num" ]; then
         max_num=$highest_spec
     fi
 
-    # Return next number
+    # 回傳下一個編號
     echo $((max_num + 1))
 }
 
-# Function to clean and format a branch name
+# 清理和格式化分支名稱的函式
 clean_branch_name() {
     local name="$1"
     echo "$name" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | sed 's/^-//' | sed 's/-$//'
 }
 
-# Resolve repository root. Prefer git information when available, but fall back
-# to searching for repository markers so the workflow still functions in repositories that
-# were initialised with --no-git.
+# 解析儲存庫根目錄。優先使用 Git 資訊，但回退到
+# 搜尋儲存庫標記，以便工作流程在使用 --no-git 初始化的儲存庫中仍能運作。
 SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if git rev-parse --show-toplevel >/dev/null 2>&1; then
@@ -166,7 +165,7 @@ if git rev-parse --show-toplevel >/dev/null 2>&1; then
 else
     REPO_ROOT="$(find_repo_root "$SCRIPT_DIR")"
     if [ -z "$REPO_ROOT" ]; then
-        echo "Error: Could not determine repository root. Please run this script from within the repository." >&2
+        echo "錯誤：無法判斷儲存庫根目錄。請從儲存庫內執行此腳本。" >&2
         exit 1
     fi
     HAS_GIT=false
@@ -177,34 +176,34 @@ cd "$REPO_ROOT"
 SPECS_DIR="$REPO_ROOT/specs"
 mkdir -p "$SPECS_DIR"
 
-# Function to generate branch name with stop word filtering and length filtering
+# 使用停用詞過濾和長度過濾產生分支名稱的函式
 generate_branch_name() {
     local description="$1"
     
-    # Common stop words to filter out
+    # 要過濾掉的常見停用詞
     local stop_words="^(i|a|an|the|to|for|of|in|on|at|by|with|from|is|are|was|were|be|been|being|have|has|had|do|does|did|will|would|should|could|can|may|might|must|shall|this|that|these|those|my|your|our|their|want|need|add|get|set)$"
     
-    # Convert to lowercase and split into words
+    # 轉換為小寫並分割成單詞
     local clean_name=$(echo "$description" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/ /g')
     
-    # Filter words: remove stop words and words shorter than 3 chars (unless they're uppercase acronyms in original)
+    # 過濾單詞：移除停用詞和短於 3 個字元的單詞（除非它們在原文中是大寫縮寫）
     local meaningful_words=()
     for word in $clean_name; do
-        # Skip empty words
+        # 跳過空單詞
         [ -z "$word" ] && continue
         
-        # Keep words that are NOT stop words AND (length >= 3 OR are potential acronyms)
+        # 保留非停用詞且（長度 >= 3 或為潛在縮寫）的單詞
         if ! echo "$word" | grep -qiE "$stop_words"; then
             if [ ${#word} -ge 3 ]; then
                 meaningful_words+=("$word")
             elif echo "$description" | grep -q "\b${word^^}\b"; then
-                # Keep short words if they appear as uppercase in original (likely acronyms)
+                # 如果短單詞在原文中以大寫出現則保留（可能是縮寫）
                 meaningful_words+=("$word")
             fi
         fi
     done
     
-    # If we have meaningful words, use first 3-4 of them
+    # 如果有有意義的單詞，使用前 3-4 個
     if [ ${#meaningful_words[@]} -gt 0 ]; then
         local max_words=3
         if [ ${#meaningful_words[@]} -eq 4 ]; then max_words=4; fi
@@ -219,62 +218,62 @@ generate_branch_name() {
         done
         echo "$result"
     else
-        # Fallback to original logic if no meaningful words found
+        # 如果未找到有意義的單詞，回退到原始邏輯
         local cleaned=$(clean_branch_name "$description")
         echo "$cleaned" | tr '-' '\n' | grep -v '^$' | head -3 | tr '\n' '-' | sed 's/-$//'
     fi
 }
 
-# Generate branch name
+# 產生分支名稱
 if [ -n "$SHORT_NAME" ]; then
-    # Use provided short name, just clean it up
+    # 使用提供的短名稱，只進行清理
     BRANCH_SUFFIX=$(clean_branch_name "$SHORT_NAME")
 else
-    # Generate from description with smart filtering
+    # 使用智慧過濾從描述產生
     BRANCH_SUFFIX=$(generate_branch_name "$FEATURE_DESCRIPTION")
 fi
 
-# Determine branch number
+# 決定分支編號
 if [ -z "$BRANCH_NUMBER" ]; then
     if [ "$HAS_GIT" = true ]; then
-        # Check existing branches on remotes
+        # 檢查遠端的現有分支
         BRANCH_NUMBER=$(check_existing_branches "$SPECS_DIR")
     else
-        # Fall back to local directory check
+        # 回退到本地目錄檢查
         HIGHEST=$(get_highest_from_specs "$SPECS_DIR")
         BRANCH_NUMBER=$((HIGHEST + 1))
     fi
 fi
 
-# Force base-10 interpretation to prevent octal conversion (e.g., 010 → 8 in octal, but should be 10 in decimal)
+# 強制以 10 進位解讀以防止八進位轉換（例如 010 → 八進位為 8，但應為十進位 10）
 FEATURE_NUM=$(printf "%03d" "$((10#$BRANCH_NUMBER))")
 BRANCH_NAME="${FEATURE_NUM}-${BRANCH_SUFFIX}"
 
-# GitHub enforces a 244-byte limit on branch names
-# Validate and truncate if necessary
+# GitHub 強制分支名稱的 244 位元組限制
+# 必要時驗證並截斷
 MAX_BRANCH_LENGTH=244
 if [ ${#BRANCH_NAME} -gt $MAX_BRANCH_LENGTH ]; then
-    # Calculate how much we need to trim from suffix
-    # Account for: feature number (3) + hyphen (1) = 4 chars
+    # 計算需要從後綴截斷多少
+    # 考慮：功能編號 (3) + 連字符 (1) = 4 個字元
     MAX_SUFFIX_LENGTH=$((MAX_BRANCH_LENGTH - 4))
     
-    # Truncate suffix at word boundary if possible
+    # 如果可能，在單詞邊界截斷後綴
     TRUNCATED_SUFFIX=$(echo "$BRANCH_SUFFIX" | cut -c1-$MAX_SUFFIX_LENGTH)
-    # Remove trailing hyphen if truncation created one
+    # 如果截斷產生尾隨連字符則移除
     TRUNCATED_SUFFIX=$(echo "$TRUNCATED_SUFFIX" | sed 's/-$//')
     
     ORIGINAL_BRANCH_NAME="$BRANCH_NAME"
     BRANCH_NAME="${FEATURE_NUM}-${TRUNCATED_SUFFIX}"
     
-    >&2 echo "[specify] Warning: Branch name exceeded GitHub's 244-byte limit"
-    >&2 echo "[specify] Original: $ORIGINAL_BRANCH_NAME (${#ORIGINAL_BRANCH_NAME} bytes)"
-    >&2 echo "[specify] Truncated to: $BRANCH_NAME (${#BRANCH_NAME} bytes)"
+    >&2 echo "[specify] 警告：分支名稱超過 GitHub 的 244 位元組限制"
+    >&2 echo "[specify] 原始：$ORIGINAL_BRANCH_NAME (${#ORIGINAL_BRANCH_NAME} 位元組)"
+    >&2 echo "[specify] 已截斷為：$BRANCH_NAME (${#BRANCH_NAME} 位元組)"
 fi
 
 if [ "$HAS_GIT" = true ]; then
     git checkout -b "$BRANCH_NAME"
 else
-    >&2 echo "[specify] Warning: Git repository not detected; skipped branch creation for $BRANCH_NAME"
+    >&2 echo "[specify] 警告：未偵測到 Git 儲存庫；已跳過 $BRANCH_NAME 的分支建立"
 fi
 
 FEATURE_DIR="$SPECS_DIR/$BRANCH_NAME"
@@ -284,7 +283,7 @@ TEMPLATE="$REPO_ROOT/.specify/templates/spec-template.md"
 SPEC_FILE="$FEATURE_DIR/spec.md"
 if [ -f "$TEMPLATE" ]; then cp "$TEMPLATE" "$SPEC_FILE"; else touch "$SPEC_FILE"; fi
 
-# Set the SPECIFY_FEATURE environment variable for the current session
+# 為目前工作階段設定 SPECIFY_FEATURE 環境變數
 export SPECIFY_FEATURE="$BRANCH_NAME"
 
 if $JSON_MODE; then
@@ -293,5 +292,5 @@ else
     echo "BRANCH_NAME: $BRANCH_NAME"
     echo "SPEC_FILE: $SPEC_FILE"
     echo "FEATURE_NUM: $FEATURE_NUM"
-    echo "SPECIFY_FEATURE environment variable set to: $BRANCH_NAME"
+    echo "SPECIFY_FEATURE 環境變數已設定為：$BRANCH_NAME"
 fi

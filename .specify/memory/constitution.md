@@ -1,50 +1,50 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# [專案名稱] 憲章
+<!-- 範例：Spec 憲章、TaskFlow 憲章等 -->
 
-## Core Principles
+## 核心原則
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### [原則一名稱]
+<!-- 範例：I. 函式庫優先 (Library-First) -->
+[原則一說明]
+<!-- 範例：每個功能都從獨立函式庫開始；函式庫必須自包含、可獨立測試、有完整文件；需有明確目的——不可建立僅為組織用途的函式庫 -->
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### [原則二名稱]
+<!-- 範例：II. 命令列介面 (CLI Interface) -->
+[原則二說明]
+<!-- 範例：每個函式庫都透過命令列介面 (CLI) 公開功能；文字輸入/輸出協定：stdin/args → stdout，錯誤 → stderr；支援 JSON + 人類可讀格式 -->
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### [原則三名稱]
+<!-- 範例：III. 測試優先（不可妥協）(Test-First, NON-NEGOTIABLE) -->
+[原則三說明]
+<!-- 範例：測試驅動開發 (TDD) 為必要條件：撰寫測試 → 使用者核准 → 測試失敗 → 然後實作；嚴格執行紅-綠-重構 (Red-Green-Refactor) 循環 -->
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### [原則四名稱]
+<!-- 範例：IV. 整合測試 (Integration Testing) -->
+[原則四說明]
+<!-- 範例：需要整合測試的重點領域：新函式庫契約測試、契約變更、服務間通訊、共用結構 (Schema) -->
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### [原則五名稱]
+<!-- 範例：V. 可觀測性 (Observability)、VI. 版本控制與破壞性變更 (Versioning & Breaking Changes)、VII. 簡約原則 (Simplicity) -->
+[原則五說明]
+<!-- 範例：文字輸入/輸出確保可除錯性；需要結構化日誌記錄；或：使用 MAJOR.MINOR.BUILD 格式；或：從簡單開始，YAGNI 原則 -->
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## [區段二名稱]
+<!-- 範例：附加約束條件、安全性需求、效能標準等 -->
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+[區段二內容]
+<!-- 範例：技術堆疊需求、合規標準、部署政策等 -->
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## [區段三名稱]
+<!-- 範例：開發工作流程、審查流程、品質關卡等 -->
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+[區段三內容]
+<!-- 範例：程式碼審查需求、測試關卡、部署核准流程等 -->
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+## 治理
+<!-- 範例：憲章優先於所有其他實務；修訂需要文件、核准、遷移計畫 -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+[治理規則]
+<!-- 範例：所有 PR / 審查必須驗證合規性；複雜性必須有正當理由；使用 [指引檔案] 作為執行階段開發指引 -->
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**版本**：[憲章版本] | **批准日期**：[批准日期] | **最後修訂**：[最後修訂日期]
+<!-- 範例：版本：2.1.1 | 批准日期：2025-06-13 | 最後修訂：2025-07-16 -->
