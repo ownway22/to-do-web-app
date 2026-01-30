@@ -36,6 +36,36 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
         self.send_header('Pragma', 'no-cache')
         self.send_header('Expires', '0')
+        
+        # 安全標頭
+        # Content Security Policy: 防止 XSS 攻擊
+        # 注意：使用 'unsafe-inline' 是因為應用程式使用內聯腳本和樣式
+        # 在生產環境中，建議重構為外部檔案或使用 nonce/hash
+        self.send_header('Content-Security-Policy', 
+                        "default-src 'self'; "
+                        "script-src 'self' 'unsafe-inline'; "
+                        "style-src 'self' 'unsafe-inline'; "
+                        "img-src 'self' data:; "
+                        "font-src 'self'; "
+                        "connect-src 'self'; "
+                        "frame-ancestors 'none'; "
+                        "base-uri 'self'; "
+                        "form-action 'self'")
+        
+        # X-Frame-Options: 防止點擊劫持攻擊
+        self.send_header('X-Frame-Options', 'DENY')
+        
+        # X-Content-Type-Options: 防止 MIME 類型嗅探
+        self.send_header('X-Content-Type-Options', 'nosniff')
+        
+        # X-XSS-Protection: 啟用瀏覽器 XSS 過濾器（舊版瀏覽器）
+        # 注意：此標頭已被棄用，現代瀏覽器依賴 CSP 進行 XSS 防護
+        # 保留此標頭僅為支援舊版瀏覽器，但可能在某些瀏覽器中引入安全問題
+        self.send_header('X-XSS-Protection', '1; mode=block')
+        
+        # Referrer-Policy: 控制 Referrer 資訊洩漏
+        self.send_header('Referrer-Policy', 'strict-origin-when-cross-origin')
+        
         super().end_headers()
 
 
@@ -43,7 +73,9 @@ def main():
     """啟動開發伺服器"""
     os.chdir(DIRECTORY)
     
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    # 只綁定到 localhost (127.0.0.1) 以提高安全性
+    # 避免暴露於外部網路
+    with socketserver.TCPServer(("127.0.0.1", PORT), Handler) as httpd:
         print(f"🚀 待辦事項網頁應用開發伺服器")
         print(f"📁 服務目錄：{DIRECTORY}")
         print(f"🌐 開啟瀏覽器訪問：http://localhost:{PORT}")
