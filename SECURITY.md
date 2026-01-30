@@ -59,7 +59,10 @@ Content-Security-Policy: default-src 'self';
 
 **說明：**
 - `script-src 'self' 'unsafe-inline'`: 允許同源腳本和內聯腳本（應用需要）
+  - **注意：** `'unsafe-inline'` 會降低 XSS 防護強度
+  - 建議：在生產環境中重構為外部腳本檔案，或使用 nonce/hash 機制
 - `style-src 'self' 'unsafe-inline'`: 允許同源樣式和內聯樣式
+  - 建議：在生產環境中重構為外部樣式檔案
 - `frame-ancestors 'none'`: 防止被嵌入 iframe（點擊劫持防護）
 - 其他指令限制資源僅能從同源載入
 
@@ -78,7 +81,9 @@ Content-Security-Policy: default-src 'self';
 
 3. **X-XSS-Protection: 1; mode=block**
    - 啟用舊版瀏覽器的 XSS 過濾器
-   - 檢測到 XSS 時阻止頁面載入
+   - **注意：此標頭已被棄用**，現代瀏覽器已移除此功能
+   - 現代瀏覽器依賴 Content-Security-Policy 進行 XSS 防護
+   - 保留此標頭僅為支援舊版瀏覽器，但在某些瀏覽器中可能引入安全問題
 
 4. **Referrer-Policy: strict-origin-when-cross-origin**
    - 控制 Referrer 資訊的傳遞
@@ -182,17 +187,24 @@ socketserver.TCPServer(("127.0.0.1", PORT), Handler)
    - 取得 SSL/TLS 憑證（Let's Encrypt 免費）
    - 配置反向代理（Nginx、Apache）
 
-2. **調整 CSP 政策**
-   - 移除 `'unsafe-inline'`（如可能）
-   - 使用 nonce 或 hash 來允許特定腳本
+2. **改善 CSP 政策**
+   - **移除 `'unsafe-inline'`**：將所有內聯腳本和樣式移至外部檔案
+   - 使用 nonce 或 hash 來允許特定的內聯腳本/樣式
+   - 範例：`script-src 'self' 'nonce-{random}'`
 
-3. **使用生產級伺服器**
+3. **移除或重新考慮 X-XSS-Protection**
+   - 此標頭已被棄用且可能引入安全問題
+   - 現代 CSP 已提供更好的 XSS 防護
+   - 建議：移除此標頭，完全依賴 CSP
+
+4. **使用生產級伺服器**
    - 不要在生產環境使用 Python SimpleHTTPServer
    - 使用 Nginx、Apache 或 CDN
 
-4. **啟用 HSTS**
+5. **啟用 HSTS**
    - 添加 `Strict-Transport-Security` 標頭
    - 強制使用 HTTPS
+   - 範例：`Strict-Transport-Security: max-age=31536000; includeSubDomains`
 
 ### 開發最佳實踐
 1. ✅ 定期執行安全掃描

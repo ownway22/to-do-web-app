@@ -39,6 +39,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         
         # 安全標頭
         # Content Security Policy: 防止 XSS 攻擊
+        # 注意：使用 'unsafe-inline' 是因為應用程式使用內聯腳本和樣式
+        # 在生產環境中，建議重構為外部檔案或使用 nonce/hash
         self.send_header('Content-Security-Policy', 
                         "default-src 'self'; "
                         "script-src 'self' 'unsafe-inline'; "
@@ -56,7 +58,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         # X-Content-Type-Options: 防止 MIME 類型嗅探
         self.send_header('X-Content-Type-Options', 'nosniff')
         
-        # X-XSS-Protection: 啟用瀏覽器 XSS 過濾器（舊版瀏覽器支援）
+        # X-XSS-Protection: 啟用瀏覽器 XSS 過濾器（舊版瀏覽器）
+        # 注意：此標頭已被棄用，現代瀏覽器依賴 CSP 進行 XSS 防護
+        # 保留此標頭僅為支援舊版瀏覽器，但可能在某些瀏覽器中引入安全問題
         self.send_header('X-XSS-Protection', '1; mode=block')
         
         # Referrer-Policy: 控制 Referrer 資訊洩漏
