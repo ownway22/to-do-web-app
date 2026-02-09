@@ -1,82 +1,172 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="待辦事項網頁應用 - 管理您的日常任務">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="待辦事項網頁應用 - 管理您的日常任務" />
     <title>待辦事項</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <!-- 登入畫面 -->
+    <div id="login-screen" class="login-screen">
+      <div class="login-card">
+        <h1 class="login-title">📝 待辦事項</h1>
+        <p class="login-subtitle">請登入以繼續</p>
+        <form id="login-form" class="login-form" autocomplete="off">
+          <div class="login-field">
+            <label for="login-username">帳號</label>
+            <input
+              type="text"
+              id="login-username"
+              class="login-input"
+              placeholder="請輸入帳號"
+              autocomplete="username"
+              autofocus
+            />
+          </div>
+          <div class="login-field">
+            <label for="login-password">密碼</label>
+            <input
+              type="password"
+              id="login-password"
+              class="login-input"
+              placeholder="請輸入密碼"
+              autocomplete="current-password"
+            />
+          </div>
+          <p
+            id="login-error"
+            class="login-error"
+            role="alert"
+            aria-live="assertive"
+          ></p>
+          <button
+            type="submit"
+            id="login-btn"
+            class="btn btn-primary login-btn"
+          >
+            登入
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 歡迎訊息畫面 -->
+    <div id="welcome-screen" class="welcome-screen">
+      <div class="welcome-content">
+        <p class="welcome-text">👋 歡迎回來！</p>
+      </div>
+    </div>
+
     <div class="container">
-        <header class="header">
-            <h1>📝 待辦事項</h1>
-            <button 
-                id="theme-toggle" 
-                class="theme-toggle" 
-                type="button"
-                aria-label="切換到深色模式"
-                title="切換顏色模式"
-            >🌙</button>
-        </header>
+      <header class="header">
+        <h1>📝 待辦事項</h1>
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          type="button"
+          aria-label="切換到深色模式"
+          title="切換顏色模式"
+        >
+          🌙
+        </button>
+        <button
+          id="logout-btn"
+          class="logout-btn"
+          type="button"
+          aria-label="登出"
+          title="登出"
+        >
+          登出
+        </button>
+      </header>
 
-        <main class="main">
-            <!-- 新增待辦事項表單 -->
-            <section class="add-section" aria-labelledby="add-heading">
-                <h2 id="add-heading" class="visually-hidden">新增待辦事項</h2>
-                <form id="todo-form" class="todo-form" role="form">
-                    <div class="input-group">
-                        <label for="todo-input" class="visually-hidden">輸入待辦事項</label>
-                        <input 
-                            type="text" 
-                            id="todo-input" 
-                            class="todo-input" 
-                            placeholder="輸入待辦事項..." 
-                            maxlength="100"
-                            autocomplete="off"
-                            aria-describedby="char-count"
-                        >
-                        <span id="char-count" class="char-count" aria-live="polite">0/100</span>
-                    </div>
-                    <button type="submit" class="btn btn-primary" aria-label="新增待辦事項">
-                        新增
-                    </button>
-                </form>
-                <p id="form-error" class="error-message" role="alert" aria-live="assertive"></p>
-            </section>
+      <main class="main">
+        <!-- 新增待辦事項表單 -->
+        <section class="add-section" aria-labelledby="add-heading">
+          <h2 id="add-heading" class="visually-hidden">新增待辦事項</h2>
+          <form id="todo-form" class="todo-form" role="form">
+            <div class="input-group">
+              <label for="todo-input" class="visually-hidden"
+                >輸入待辦事項</label
+              >
+              <input
+                type="text"
+                id="todo-input"
+                class="todo-input"
+                placeholder="輸入待辦事項..."
+                maxlength="100"
+                autocomplete="off"
+                aria-describedby="char-count"
+              />
+              <span id="char-count" class="char-count" aria-live="polite"
+                >0/100</span
+              >
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              aria-label="新增待辦事項"
+            >
+              新增
+            </button>
+          </form>
+          <p
+            id="form-error"
+            class="error-message"
+            role="alert"
+            aria-live="assertive"
+          ></p>
+        </section>
 
-            <!-- 待辦事項清單 -->
-            <section class="list-section" aria-labelledby="list-heading">
-                <h2 id="list-heading" class="visually-hidden">待辦事項清單</h2>
-                
-                <!-- 未完成項目 -->
-                <div class="todo-group" id="pending-group">
-                    <h3 class="group-title">未完成</h3>
-                    <ul id="pending-list" class="todo-list" role="list" aria-label="未完成的待辦事項">
-                        <!-- 動態生成 -->
-                    </ul>
-                </div>
+        <!-- 待辦事項清單 -->
+        <section class="list-section" aria-labelledby="list-heading">
+          <h2 id="list-heading" class="visually-hidden">待辦事項清單</h2>
 
-                <!-- 已完成項目 -->
-                <div class="todo-group" id="completed-group">
-                    <h3 class="group-title">已完成</h3>
-                    <ul id="completed-list" class="todo-list" role="list" aria-label="已完成的待辦事項">
-                        <!-- 動態生成 -->
-                    </ul>
-                </div>
+          <!-- 未完成項目 -->
+          <div class="todo-group" id="pending-group">
+            <h3 class="group-title">未完成</h3>
+            <ul
+              id="pending-list"
+              class="todo-list"
+              role="list"
+              aria-label="未完成的待辦事項"
+            >
+              <!-- 動態生成 -->
+            </ul>
+          </div>
 
-                <!-- 空狀態提示 -->
-                <div id="empty-state" class="empty-state" hidden>
-                    <p>🎉 目前沒有待辦事項</p>
-                    <p class="empty-hint">在上方輸入框新增您的第一個任務吧！</p>
-                </div>
-            </section>
-        </main>
+          <!-- 已完成項目 -->
+          <div class="todo-group" id="completed-group">
+            <h3 class="group-title">已完成</h3>
+            <ul
+              id="completed-list"
+              class="todo-list"
+              role="list"
+              aria-label="已完成的待辦事項"
+            >
+              <!-- 動態生成 -->
+            </ul>
+          </div>
 
-        <!-- 螢幕閱讀器宣告區 -->
-        <div id="announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+          <!-- 空狀態提示 -->
+          <div id="empty-state" class="empty-state" hidden>
+            <p>🎉 目前沒有待辦事項</p>
+            <p class="empty-hint">在上方輸入框新增您的第一個任務吧！</p>
+          </div>
+        </section>
+      </main>
+
+      <!-- 螢幕閱讀器宣告區 -->
+      <div
+        id="announcer"
+        class="visually-hidden"
+        aria-live="polite"
+        aria-atomic="true"
+      ></div>
     </div>
 
     <script src="js/app.js"></script>
-</body>
+  </body>
 </html>
