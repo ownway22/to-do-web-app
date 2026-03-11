@@ -18,13 +18,13 @@
 
 ### 特色亮點
 
-| 特色 | 說明 |
-|------|------|
-| 🎨 現代化介面 | 美觀的卡片式設計，支援深色/淺色模式切換 |
-| 📱 響應式設計 | 手機、平板、電腦都能完美顯示 |
-| ♿ 無障礙支援 | 符合 WCAG 2.1 AA 標準，支援螢幕閱讀器與鍵盤操作 |
-| 🚫 不需後端 | 使用瀏覽器 localStorage 儲存資料，無需設定資料庫 |
-| 🐍 簡易伺服器 | 使用 Python 內建模組，一行指令即可啟動 |
+| 特色          | 說明                                             |
+| ------------- | ------------------------------------------------ |
+| 🎨 現代化介面 | 美觀的卡片式設計，支援深色/淺色模式切換          |
+| 📱 響應式設計 | 手機、平板、電腦都能完美顯示                     |
+| ♿ 無障礙支援 | 符合 WCAG 2.1 AA 標準，支援螢幕閱讀器與鍵盤操作  |
+| 🚫 不需後端   | 使用瀏覽器 localStorage 儲存資料，無需設定資料庫 |
+| 🐍 簡易伺服器 | 使用 Python 內建模組，一行指令即可啟動           |
 
 ---
 
@@ -37,7 +37,7 @@
 - **Python 3.11 或更新版本**（用於啟動開發伺服器）
 - **現代瀏覽器**（Chrome、Firefox、Safari、Edge 任一即可）
 
-> 💡 **如何檢查 Python 版本？**  
+> 💡 **如何檢查 Python 版本？**
 > 在終端機輸入：`python --version` 或 `python3 --version`
 
 ### 步驟二：下載專案
@@ -61,6 +61,7 @@ python server.py
 ```
 
 你會看到類似這樣的輸出：
+
 ```
 🚀 待辦事項網頁應用開發伺服器
 📁 服務目錄：/path/to/src
@@ -106,13 +107,13 @@ toDo-webApp/
 
 ```javascript
 // 儲存資料
-localStorage.setItem('todo-webapp-data', JSON.stringify(data));
+localStorage.setItem("todo-webapp-data", JSON.stringify(data));
 
 // 讀取資料
-const data = JSON.parse(localStorage.getItem('todo-webapp-data'));
+const data = JSON.parse(localStorage.getItem("todo-webapp-data"));
 ```
 
-> 📚 **什麼是 localStorage？**  
+> 📚 **什麼是 localStorage？**
 > localStorage 是瀏覽器提供的儲存空間，可以在網頁關閉後保留資料。每個網站最多可儲存約 5MB 的資料。
 
 ### 2️⃣ 待辦事項資料結構
@@ -145,25 +146,36 @@ const data = JSON.parse(localStorage.getItem('todo-webapp-data'));
 ## 功能操作說明
 
 ### 新增待辦事項
+
 1. 在輸入框輸入任務內容
 2. 按下「新增」按鈕或按 **Enter 鍵**
 3. 新項目會出現在「未完成」清單最上方
 
 ### 標記完成/未完成
+
 - 點擊項目左側的 **核取方塊**
 - 完成的項目會移到「已完成」區塊，並顯示刪除線
 
 ### 編輯項目
+
 1. 點擊項目右側的 **「編輯」按鈕**
 2. 修改內容後按 **Enter** 儲存
 3. 按 **Esc** 取消編輯
 
 ### 刪除項目
+
 1. 點擊項目右側的 **「刪除」按鈕**
 2. 確認對話框會詢問「確認刪除？」
 3. 點擊確認後項目會被移除
 
 ### 深色模式切換
+
+1. 點擊項目右側的 **「刪除」按鈕**
+2. 確認對話框會詢問「確認刪除？」
+3. 點擊確認後項目會被移除
+
+### 深色模式切換
+
 - 點擊標題區右上角的 **🌙/☀️ 按鈕**
 - 系統會記住你的偏好設定
 
@@ -180,16 +192,16 @@ graph TB
         CSS["🎨 styles.css<br/>響應式 CSS"]
         JS["⚡ app.js<br/>CRUD 邏輯"]
         LS[("💾 localStorage<br/>todo-webapp-data")]
-        
+
         HTML --> CSS
         HTML --> JS
         JS <--> LS
     end
-    
+
     subgraph Server["🐍 Python 伺服器"]
         PY["server.py<br/>http.server"]
     end
-    
+
     PY -->|"HTTP :8000"| Browser
 ```
 
@@ -203,7 +215,7 @@ flowchart LR
         C[刪除] --> E
         D[切換狀態] --> E
     end
-    
+
     subgraph 資料處理
         E --> F{驗證}
         F -->|通過| G[更新陣列]
@@ -256,7 +268,5 @@ stateDiagram-v2
 <div align="center">
 
 **Happy Coding! 🎉**
-
-Made with ❤️ for students
 
 </div>
